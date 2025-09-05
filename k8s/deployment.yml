@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: results-svc
+  labels:
+    app: results-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: results-svc
+  template:
+    metadata:
+      labels:
+        app: results-svc
+    spec:
+      containers:
+        - name: results-svc
+          image: ghcr.io/flawmop/results-svc
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 5" ]
+          ports:
+            - containerPort: 9004
+          resources:
+            requests:
+              memory: 600Mi
+            limits:
+              memory: 750Mi
+          volumeMounts:
+            - name: results-config-volume
+              mountPath: /workspace/config
+      volumes:
+        - name: results-config-volume
+          configMap:
+            name: results-config
