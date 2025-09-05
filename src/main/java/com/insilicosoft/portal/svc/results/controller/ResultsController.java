@@ -21,7 +21,7 @@ public class ResultsController {
   private static final Logger log = LoggerFactory.getLogger(ResultsController.class);
 
   /**
-   * Initialising constructor.
+   * Default constructor.
    */
   public ResultsController() {
   }
