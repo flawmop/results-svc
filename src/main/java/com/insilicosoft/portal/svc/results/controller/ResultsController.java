@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.insilicosoft.portal.svc.results.ResultsIdentifiers;
+import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
+import com.insilicosoft.portal.svc.results.persistence.entity.Results;
+import com.insilicosoft.portal.svc.results.service.ResultsService;
 
 /**
  * Results controller.
@@ -20,20 +23,28 @@ public class ResultsController {
 
   private static final Logger log = LoggerFactory.getLogger(ResultsController.class);
 
+  private final ResultsService resultsService;
+
   /**
-   * Default constructor.
+   * Initialising constructor.
+   * 
+   * @param resultsService Results service.
    */
-  public ResultsController() {
+  public ResultsController(final ResultsService resultsService) {
+    this.resultsService = resultsService;
   }
 
   /**
    * Retrieve results.
    * 
-   * @param resultsId Results identifier.
+   * @param submissionId Submission identifier.
    */
   @GetMapping(value = "/{id}")
-  public void get(final @PathVariable(name = "id") long resultsId) {
-    log.debug("~get() : Invoked for '{}'", resultsId);
+  public Results get(final @PathVariable(name = "id") long submissionId) 
+                     throws EntityNotAccessibleException {
+    log.debug("~get() : Invoked for '{}'", submissionId);
+
+    return resultsService.retrieve(submissionId);
   }
 
 }

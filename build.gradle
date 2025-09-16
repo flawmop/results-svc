@@ -1,7 +1,8 @@
 plugins {
   id 'java'
-  id 'org.springframework.boot' version '3.2.5'
-  id 'io.spring.dependency-management' version '1.1.4'
+
+  id 'io.spring.dependency-management' version '1.1.6'
+  id 'org.springframework.boot' version '3.3.3'
 }
 
 group = 'com.insilicosoft.portal.svc'
@@ -15,12 +16,39 @@ repositories {
   mavenCentral()
 }
 
+ext {
+  set('tcPostgresVersion', "1.17.3")
+}
+
+configurations {
+  runtimeOnly {
+    // Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+    exclude group: 'commons-logging', module: 'commons-logging'
+  }
+}
+
 dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.springframework.boot:spring-boot-starter-web'
+
+  runtimeOnly 'org.postgresql:postgresql'
+
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.testcontainers:testcontainers-bom:${tcPostgresVersion}"
+  }
 }
 
 tasks.named('test') {
   useJUnitPlatform()
+}
+
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
 }

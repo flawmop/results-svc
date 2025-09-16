@@ -11,5 +11,15 @@ server:
 spring:
   application:
     name: results-svc
+  datasource:
+    hikari:
+      connection-timeout: 2000 #ms
+      maximum-pool-size: 5
+    password: password
+    url: jdbc:postgresql://localhost:5432/portaldb
+    username: user
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
   lifecycle:
     timeout-per-shutdown-phase: 15s
