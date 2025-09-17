@@ -53,6 +53,22 @@ public class Results {
   // Default constructor.
   Results() {}
 
+  /**
+   * Initialising <b>and {@code verify()}ing</b> constructor.
+   * 
+   * @param submissionId Submission identifier.
+   */
+  public Results(final long submissionId) {
+    this.submissionId = submissionId;
+
+    verify();
+  }
+
+  //
+
+  private void verify() {
+  }
+
   // Getters/Setters
 
   /**

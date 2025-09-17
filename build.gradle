@@ -17,6 +17,7 @@ repositories {
 }
 
 ext {
+  set('springCloudVersion', "2023.0.0")
   set('tcPostgresVersion', "1.17.3")
 }
 
@@ -42,6 +43,66 @@ dependencyManagement {
   imports {
     mavenBom "org.testcontainers:testcontainers-bom:${tcPostgresVersion}"
   }
+}
+
+testing {
+  suites { 
+    configureEach { 
+      useJUnitJupiter() 
+      dependencies {
+        implementation project()
+        implementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+      }
+    }
+
+    test_i(JvmTestSuite) {
+      sources {
+        java {
+          srcDirs = ['src/test-i/java']
+        }
+        resources {
+          srcDirs = ['src/test-i/resources']
+        }
+      }
+      dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-testcontainers'
+        implementation 'org.testcontainers:junit-jupiter'
+        implementation "org.testcontainers:postgresql:${tcPostgresVersion}"
+      }
+    }
+
+    test_e2e(JvmTestSuite) {
+      sources {
+        java {
+          srcDirs = ['src/test-e2e/java']
+        }
+        resources {
+          srcDirs = ['src/test-e2e/resources']
+        }
+      }
+      dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'                      // JdbcTemplate, @Transactional
+        implementation 'org.testcontainers:junit-jupiter'
+        implementation "org.testcontainers:postgresql:${tcPostgresVersion}"
+      }
+      targets.configureEach {
+        testTask.configure {
+          environment("SPRING_PROFILES_ACTIVE", "e2e")
+          environment("LOGGING_LEVEL_ROOT", "debug")
+          // For extra debugging, use below with logging.level.root=TRACE in application-e2e.yml
+          // testLogging.showStandardStreams = true
+        }
+      }
+    }
+  }
+}
+
+tasks.named('check').configure {
+  dependsOn(test)
+  dependsOn(testing.suites.test_i)
+  dependsOn(testing.suites.test_e2e)
 }
 
 tasks.named('test') {
