@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.insilicosoft.portal.svc.results.event.SimulationCreate;
 import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
 import com.insilicosoft.portal.svc.results.persistence.entity.Results;
 import com.insilicosoft.portal.svc.results.persistence.repository.ResultsRepository;
@@ -29,7 +30,12 @@ public class ResultsServiceImpl implements ResultsService {
   ResultsServiceImpl(final ResultsRepository resultsRepository) {
     this.resultsRepository = resultsRepository;
   }
- 
+
+  @Override
+  public void create(final SimulationCreate simulationCreate) {
+    log.debug("~create() : Invoked for '{}'", simulationCreate);
+  }
+
   @Override
   public Results retrieve(final long submissionId) throws EntityNotAccessibleException {
     log.debug("~retrieve() : Invoked for submission id '{}'", submissionId);

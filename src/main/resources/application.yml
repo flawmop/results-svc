@@ -11,6 +11,12 @@ server:
 spring:
   application:
     name: results-svc
+  cloud:
+    stream:
+      bindings:
+        simulationCreate-in-0:
+          destination: simulation-create
+          group: ${spring.application.name}
   datasource:
     hikari:
       connection-timeout: 2000 #ms
@@ -23,3 +29,9 @@ spring:
       ddl-auto: create-drop
   lifecycle:
     timeout-per-shutdown-phase: 15s
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+    connection-timeout: 5s
