@@ -14,19 +14,19 @@ public interface ResultsService {
   /**
    * Create a new results entity.
    * <p>
-   * A simulation creation event has been recieved so create placeholder data. 
+   * A simulation creation event has been received so create placeholder data. 
    * 
    * @param simulationCreate Simulation creation event record.
    */
   void create(SimulationCreate simulationCreate);
 
   /**
-   * Retrieve the {@link Results} identified by the {@literal submissionId}.
+   * Retrieve the {@link Results} identified by the {@literal simulationId}.
    * 
-   * @param submissionId Submission identifier.
+   * @param simulationId Simulation identifier.
    * @return Results
    * @throws EntityNotAccessibleException If identified Results not accessible.
    */
-  Results retrieve(long submissionId) throws EntityNotAccessibleException;
+  Results retrieve(long simulationId) throws EntityNotAccessibleException;
 
 }

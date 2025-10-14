@@ -30,10 +30,10 @@ public class Results {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = IDENTITY)
-  private Long entityId;
+  private Long resultsId;
 
   @Column(nullable = false, updatable = false)
-  private long submissionId;
+  private long simulationId;
 
   @Column(name = "message")
   private String message;
@@ -56,10 +56,12 @@ public class Results {
   /**
    * Initialising <b>and {@code verify()}ing</b> constructor.
    * 
-   * @param submissionId Submission identifier.
+   * @param simulationId Simulation identifier.
+   * @throws IllegalStateException On attempting to construct a <code>Results</code> object with
+   *                               invalid properties.
    */
-  public Results(final long submissionId) {
-    this.submissionId = submissionId;
+  public Results(final long simulationId) throws IllegalStateException {
+    this.simulationId = simulationId;
 
     verify();
   }
@@ -67,17 +69,19 @@ public class Results {
   //
 
   private void verify() {
+    if (this.simulationId < 1l)
+      throw new IllegalStateException("Results object constructed with an invalid simulation id of '" + this.simulationId + "'");
   }
 
   // Getters/Setters
 
   /**
-   * Retrieve the entity identifier.
+   * Retrieve the results identifier.
    * 
-   * @return Entity identifier (or empty {@code Optional} if not yet persisted).
+   * @return Results identifier (or empty {@code Optional} if not yet persisted).
    */
-  public Optional<Long> getEntityId() {
-    return Optional.ofNullable(entityId);
+  public Optional<Long> getResultsId() {
+    return Optional.ofNullable(resultsId);
   }
 
   /**
@@ -98,7 +102,7 @@ public class Results {
 
   @Override
   public String toString() {
-    return "Results [entityId=" + entityId + ", submissionId=" + submissionId + ", message=" + message
+    return "Results [resultsId=" + resultsId + ", simulationId=" + simulationId + ", message=" + message
         + ", lastModifiedDate=" + lastModifiedDate + ", lastModifiedBy=" + lastModifiedBy + ", lockVersion="
         + lockVersion + "]";
   }

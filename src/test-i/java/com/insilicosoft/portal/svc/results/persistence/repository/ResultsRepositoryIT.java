@@ -35,10 +35,10 @@ public class ResultsRepositoryIT {
 
   @Test
   void retrieveResults() {
-    final long submissionId = 1l;
-    resultsRepository.save(new Results(submissionId));
+    final long simulationId = 1l;
+    resultsRepository.save(new Results(simulationId));
 
-    assertThat(resultsRepository.findBySubmissionId(submissionId)).isNotNull();
+    assertThat(resultsRepository.findBySimulationId(simulationId)).isNotNull();
   }
 
 }

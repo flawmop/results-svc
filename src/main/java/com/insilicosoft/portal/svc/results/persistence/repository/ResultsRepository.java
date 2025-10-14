@@ -13,6 +13,6 @@ import com.insilicosoft.portal.svc.results.persistence.entity.Results;
  */
 public interface ResultsRepository extends JpaRepository<Results, Long> {
 
-  Optional<Results> findBySubmissionId(long submissionId);
+  Optional<Results> findBySimulationId(long simulationId);
 
 }

@@ -34,15 +34,27 @@ public class ResultsServiceImpl implements ResultsService {
   @Override
   public void create(final SimulationCreate simulationCreate) {
     log.debug("~create() : Invoked for '{}'", simulationCreate);
+
+    Results results = null;
+    try {
+      results = new Results(simulationCreate.simulationId());
+    } catch (IllegalStateException e) {
+      log.error("~create() : Cannot create a new results object due to '{}'", e.getMessage());
+    }
+
+    if (results != null) {
+      resultsRepository.save(results);
+      log.debug("~create() : New results saved '{}'", results);
+    }
   }
 
   @Override
-  public Results retrieve(final long submissionId) throws EntityNotAccessibleException {
-    log.debug("~retrieve() : Invoked for submission id '{}'", submissionId);
-    final Results results = resultsRepository.findBySubmissionId(submissionId)
+  public Results retrieve(final long simulationId) throws EntityNotAccessibleException {
+    log.debug("~retrieve() : Invoked for simulation id '{}'", simulationId);
+    final Results results = resultsRepository.findBySimulationId(simulationId)
                                              .orElseThrow(() -> new EntityNotAccessibleException(repoEntity,
-                                                                                                 String.valueOf(submissionId)));
-    log.debug("~retrieve() : Retrieved : " + results);
+                                                                                                 String.valueOf(simulationId)));
+    log.debug("~retrieve() : Retrieved results '{}'", results);
     return results;
   }
 
