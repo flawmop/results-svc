@@ -32,8 +32,13 @@ public class Results {
   @GeneratedValue(strategy = IDENTITY)
   private Long resultsId;
 
+  // Portal application creates this identity when the simulation is persisted
   @Column(nullable = false, updatable = false)
   private long simulationId;
+
+  // app-manager creates this identity when the simulation is run.
+  @Column()
+  private String appManagerId;
 
   @Column(name = "message")
   private String message;
@@ -70,10 +75,31 @@ public class Results {
 
   private void verify() {
     if (this.simulationId < 1l)
-      throw new IllegalStateException("Results object constructed with an invalid simulation id of '" + this.simulationId + "'");
+      throw new IllegalStateException("Results object has an invalid simulation id of '" + this.simulationId + "'");
   }
 
   // Getters/Setters
+
+  /**
+   * Retrieve the App-Manager identifier.
+   * 
+   * @return The app-manager identifier.
+   */
+  public Optional<String> getAppManagerId() {
+    return Optional.ofNullable(appManagerId);
+  }
+
+  /**
+   * Assign the app-manager identifier.
+   * 
+   * @param The app-manager identifier.
+   */
+  public void setAppManagerId(final String appManagerId) {
+    if (this.appManagerId != null)
+      throw new IllegalArgumentException("Cannot reassign an app-manager id on a Results object");
+
+    this.appManagerId = appManagerId;
+  }
 
   /**
    * Retrieve the results identifier.
@@ -102,9 +128,9 @@ public class Results {
 
   @Override
   public String toString() {
-    return "Results [resultsId=" + resultsId + ", simulationId=" + simulationId + ", message=" + message
-        + ", lastModifiedDate=" + lastModifiedDate + ", lastModifiedBy=" + lastModifiedBy + ", lockVersion="
-        + lockVersion + "]";
+    return "Results [resultsId=" + resultsId + ", simulationId=" + simulationId + ", appManagerId=" + appManagerId
+        + ", message=" + message + ", lastModifiedDate=" + lastModifiedDate + ", lastModifiedBy=" + lastModifiedBy
+        + ", lockVersion=" + lockVersion + "]";
   }
 
 }

@@ -8,6 +8,7 @@ import com.insilicosoft.portal.svc.results.event.SimulationCreate;
 import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
 import com.insilicosoft.portal.svc.results.persistence.entity.Results;
 import com.insilicosoft.portal.svc.results.persistence.repository.ResultsRepository;
+import com.insilicosoft.portal.svc.results.value.ResultsDTO;
 
 /**
  * Results service implementation.
@@ -56,6 +57,30 @@ public class ResultsServiceImpl implements ResultsService {
                                                                                                  String.valueOf(simulationId)));
     log.debug("~retrieve() : Retrieved results '{}'", results);
     return results;
+  }
+
+  @Override
+  public void update(final long simulationId, final ResultsDTO resultsDto)
+                     throws EntityNotAccessibleException, IllegalStateException {
+    log.debug("~update() : Invoked for simulation id '{}'", simulationId);
+
+    final Results updated = resultsRepository.findBySimulationId(simulationId)
+                                             .map(existingResults -> {
+                                               if (resultsDto.getAppManagerId() != null) {
+                                                 if (existingResults.getAppManagerId().isPresent()) {
+                                                   final String errMsg = "Cannot reassign an AppManager id on a Results object!";
+                                                   log.error("~update() : {}", errMsg);
+                                                   throw new IllegalStateException(errMsg);
+                                                 }
+                                                 existingResults.setAppManagerId(resultsDto.getAppManagerId());
+                                               }
+
+                                               return resultsRepository.save(existingResults);
+                                             }).orElseThrow(
+                                               () -> new EntityNotAccessibleException(repoEntity,
+                                                                                      String.valueOf(simulationId))
+                                             );
+    log.debug("~update() : Post-update '{}'", updated);
   }
 
 }
