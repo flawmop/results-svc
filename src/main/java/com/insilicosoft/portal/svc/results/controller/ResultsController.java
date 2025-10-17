@@ -64,6 +64,7 @@ public class ResultsController {
   }
 
   @PostMapping(value = "/api/collection")
+  @ResponseStatus(HttpStatus.OK)
   public void post(final @RequestBody AppManagerDTO appManagerDto) {
     log.debug("~post() : Invoked for '{}'", appManagerDto);
 
