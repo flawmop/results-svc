@@ -4,6 +4,9 @@ import com.insilicosoft.portal.svc.results.event.SimulationCreate;
 import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
 import com.insilicosoft.portal.svc.results.persistence.entity.Results;
 import com.insilicosoft.portal.svc.results.value.ResultsDTO;
+import com.insilicosoft.portal.svc.results.value.appmanager.NewRecordDTO;
+import com.insilicosoft.portal.svc.results.value.appmanager.SimulationDataDTO;
+import com.insilicosoft.portal.svc.results.value.appmanager.StopDTO;
 
 /**
  * Results service.
@@ -16,10 +19,41 @@ public interface ResultsService {
    * Create a new results entity.
    * <p>
    * A simulation creation event has been received so create placeholder data. 
-   * 
+   *
    * @param simulationCreate Simulation creation event record.
    */
   void create(SimulationCreate simulationCreate);
+
+  /**
+   * AppManager has created a new simulation
+   * @param newRecordDTO
+   * @throws EntityNotAccessibleException
+   */
+  void processNewRecord(NewRecordDTO newRecordDTO) throws EntityNotAccessibleException;
+
+  /**
+   * Process simulation output, e.g. voltage_results.
+   *
+   * @param simulationDataDTO Simulation results data DTO.
+   * @throws EntityNotAccessibleException If identified Results not accessible.
+   */
+  void processSimulationData(SimulationDataDTO simulationDataDTO) throws EntityNotAccessibleException;
+
+  /**
+   * Process STDERR and/or STDOUT data.
+   *
+   * @param simulationDataDTO Simulation data DTO.
+   * @throws EntityNotAccessibleException If identified Results not accessible.
+   */
+  void processStdData(SimulationDataDTO simulationDataDTO) throws EntityNotAccessibleException;
+
+  /**
+   * Process a notification that the simulation has stopped.
+   * 
+   * @param stopDto Simulation stopped notification;
+   * @throws EntityNotAccessibleException If identified Results not accessible;
+   */
+  void processStop(StopDTO stopDto) throws EntityNotAccessibleException;
 
   /**
    * Retrieve the {@link Results} identified by the {@literal simulationId}.

@@ -14,5 +14,6 @@ import com.insilicosoft.portal.svc.results.persistence.entity.Results;
 public interface ResultsRepository extends JpaRepository<Results, Long> {
 
   Optional<Results> findBySimulationId(long simulationId);
+  Optional<Results> findByAppManagerId(String appManagerId);
 
 }

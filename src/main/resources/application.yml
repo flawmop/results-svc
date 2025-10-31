@@ -21,6 +21,8 @@ spring:
     hikari:
       connection-timeout: 2000 #ms
       maximum-pool-size: 5
+      # https://github.com/jhipster/generator-jhipster/issues/8146
+      auto-commit: false
     password: password
     url: jdbc:postgresql://localhost:5432/portaldb
     username: user

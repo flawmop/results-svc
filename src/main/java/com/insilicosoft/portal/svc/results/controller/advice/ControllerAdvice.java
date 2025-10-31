@@ -23,7 +23,8 @@ public class ControllerAdvice {
    */
   @ExceptionHandler(EntityNotAccessibleException.class)
   public ResponseEntity<String> handleEntityNotAccessible(EntityNotAccessibleException e) {
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    // TODO: Revert to NOT_FOUND - https://github.com/flawmop/results-svc/issues/2!
+    return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
   }
 
 }
