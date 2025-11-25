@@ -1,5 +1,7 @@
 package com.insilicosoft.portal.svc.results.service;
 
+import java.util.Map;
+
 import com.insilicosoft.portal.svc.results.event.SimulationCreate;
 import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
 import com.insilicosoft.portal.svc.results.persistence.entity.Results;
@@ -62,7 +64,16 @@ public interface ResultsService {
    * @return Results
    * @throws EntityNotAccessibleException If identified Results not accessible.
    */
-  Results retrieve(long simulationId) throws EntityNotAccessibleException;
+  Results retrieveBySimulationId(long simulationId) throws EntityNotAccessibleException;
+
+  /**
+   * Retrieve all the {@link Results} identified by the {@literal submissionId}.
+   * 
+   * @param submissionId Submission identifier.
+   * @return All Results for the Submission, returned map keyed by Simulation identifier.
+   * @throws EntityNotAccessibleException If identified Submission not accessible.
+   */
+  Map<Long, Results> retrieveBySubmissionId(long submissionId) throws EntityNotAccessibleException;
 
   /**
    * Update the Results object with new values.

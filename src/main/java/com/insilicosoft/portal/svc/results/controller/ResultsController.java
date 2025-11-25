@@ -1,5 +1,7 @@
 package com.insilicosoft.portal.svc.results.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,16 +54,26 @@ public class ResultsController {
   }
 
   /**
-   * Retrieve results.
+   * Retrieve results for a particular Simulation.
    * 
-   * @param submissionId Submission identifier.
+   * @param simulationId Simulation identifier.
    */
-  @GetMapping(value = "/{id}")
-  public Results get(final @PathVariable(name = "id") long simulationId) 
-                     throws EntityNotAccessibleException {
-    log.debug("~get() : Invoked for '{}'", simulationId);
+  @GetMapping(value = "/simulation/{simulationId}")
+  public Results getBySimulationId(final @PathVariable(name = "simulationId") long simulationId) 
+                                   throws EntityNotAccessibleException {
+    log.debug("~getBySimulationId() : Invoked for '{}'", simulationId);
 
-    return resultsService.retrieve(simulationId);
+    return resultsService.retrieveBySimulationId(simulationId);
+  }
+
+
+  @GetMapping(value = "/submission/{submissionId}")
+  public Map<Long, Results> getBySubmissionId(final @PathVariable(name = "submissionId")
+                                                    long submissionId)
+                                              throws EntityNotAccessibleException {
+    log.debug("~getBySubmissionId() : Invoked for '{}'", submissionId);
+
+    return resultsService.retrieveBySubmissionId(submissionId);
   }
 
   /**

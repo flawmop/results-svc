@@ -3,12 +3,19 @@ package com.insilicosoft.portal.svc.results.service;
 import static com.insilicosoft.portal.svc.results.controller.ResultsController.FILE_TITLE_STDERR;
 import static com.insilicosoft.portal.svc.results.controller.ResultsController.FILE_TITLE_STDOUT;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
 import com.insilicosoft.portal.svc.results.event.SimulationCreate;
 import com.insilicosoft.portal.svc.results.exception.EntityNotAccessibleException;
@@ -40,6 +47,7 @@ public class ResultsServiceImpl implements ResultsService {
   private static final String regexfileTitle = "^conc_.*_voltage_trace$";
   private static final String repoEntity = "Results";
 
+  private final RestClient restClientSubmission;
   private final ResultsRepository resultsRepository;
 
   /**
@@ -47,7 +55,9 @@ public class ResultsServiceImpl implements ResultsService {
    * 
    * @param resultsRepository Results repository.
    */
-  ResultsServiceImpl(final ResultsRepository resultsRepository) {
+  ResultsServiceImpl(final RestClient restClientSubmission,
+                     final ResultsRepository resultsRepository) {
+    this.restClientSubmission = restClientSubmission;
     this.resultsRepository = resultsRepository;
   }
 
@@ -179,12 +189,33 @@ public class ResultsServiceImpl implements ResultsService {
   }
 
   @Override
-  public Results retrieve(final long simulationId) throws EntityNotAccessibleException {
-    log.debug("~retrieve() : Invoked for simulation id '{}'", simulationId);
+  public Results retrieveBySimulationId(final long simulationId) throws EntityNotAccessibleException {
+    log.debug("~retrieveBySimulationId() : Invoked for '{}'", simulationId);
     final Results results = resultsRepository.findBySimulationId(simulationId)
                                              .orElseThrow(() -> new EntityNotAccessibleException(repoEntity,
                                                                                                  String.valueOf(simulationId)));
-    log.debug("~retrieve() : Retrieved results '{}'", results);
+    log.debug("~retrieveBySimulationId() : Retrieved results '{}'", results);
+    return results;
+  }
+
+  @Override
+  public Map<Long, Results> retrieveBySubmissionId(final long submissionId)
+                                                   throws EntityNotAccessibleException {
+    log.debug("~retrieveBySubmissionId() : Invoked for '{}'", submissionId);
+
+    // No authentication sent with this request!
+    // Retrieve simulation ids for the specified submission
+    List<String> simulationIds = restClientSubmission.get()
+                                                     .uri("/submission/{submissionId}/simulationIds", submissionId)
+                                                     .retrieve()
+                                                     .body(new ParameterizedTypeReference<List<String>>() {});
+
+    final Map<Long, Results> results = new HashMap<>();
+    for (String simulationIdStr : simulationIds) {
+      final Long simulationId = Long.valueOf(simulationIdStr); 
+      results.put(simulationId, retrieveBySimulationId(simulationId));
+    }
+
     return results;
   }
 

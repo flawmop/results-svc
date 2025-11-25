@@ -32,6 +32,9 @@ spec:
           volumeMounts:
             - name: results-config-volume
               mountPath: /workspace/config
+          env:
+            - name: URL_SUBMISSION_SVC
+              value: http://submission-svc:9002/
       volumes:
         - name: results-config-volume
           configMap:
