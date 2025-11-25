@@ -34,7 +34,7 @@ spec:
               mountPath: /workspace/config
           env:
             - name: URL_SUBMISSION_SVC
-              value: http://submission-svc:9002/
+              value: http://submission-svc/
       volumes:
         - name: results-config-volume
           configMap:
